@@ -14,7 +14,7 @@ class StaticVariables {
     ]
   ];
 
-  static var datasettwo = [
+  static var datasetTwo = [
     {
       "0": {"id": 1, "title": "Gingerbread"},
       "1": {"id": 2, "title": "Jellybean"},

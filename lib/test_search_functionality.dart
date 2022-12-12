@@ -92,7 +92,8 @@ class MyOrders1 extends State<Orders1> {
             Expanded(
               child: ListView.builder(
                   itemCount: _textEditingController!.text.isNotEmpty
-                      ? PartyListSearch!.length
+                      ? PartyListSearch!
+                          .length //Here is the condition for showing the search result
                       : PartyList.length,
                   itemBuilder: (ctx, index) {
                     return InkWell(
