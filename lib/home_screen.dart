@@ -42,12 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
   // TODO Working code Second Section
   List<AndroidVerison> androidListWithRandomKeys = [];
   List<AndroidVerison> androidList = [];
+
   getAndroidVersions(var data) {
     for (int i = 0; i < data.length; i++) {
       //first type
       if (data[i].runtimeType == List<Map<String, Object>>) {
         var firstData = data[i] as List;
-        androidList.clear();
         for (int i = 0; i < firstData.length; i++) {
           //print(firstData[i]['title']);   androidList
           AndroidVerison androidVerison = AndroidVerison(
@@ -57,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       //second Type random keys
       if (data[i].runtimeType != List<Map<String, Object>>) {
-        androidListWithRandomKeys.clear();
         final Map<String, dynamic> convertedData =
             jsonDecode(jsonEncode(data[i]));
         var map = HashMap.from(convertedData);
@@ -67,20 +66,32 @@ class _HomeScreenState extends State<HomeScreen> {
           if (i < 2) {
             AndroidVerison androidVerison =
                 AndroidVerison(id: map['$i']['id'], title: map['$i']['title']);
-            androidListWithRandomKeys.add(androidVerison);
+            androidList.add(androidVerison);
           } else {
             AndroidVerison androidVerison =
                 AndroidVerison(id: map['3']['id'], title: map['3']['title']);
-            androidListWithRandomKeys.add(androidVerison);
+            androidList.add(androidVerison);
           }
         }
       }
     }
   }
 
+  //This block of code is for finding list of items by searching...
+  List<AndroidVerison> SearchList = [];
+  TextEditingController? _textEditingController;
+  final FocusNode _textFocusNode = FocusNode();
+
+  void dispose() {
+    _textFocusNode.dispose();
+    _textEditingController?.dispose();
+    super.dispose();
+  }
+
 //TODO sending data based on the button click data set one or two
   @override
   void initState() {
+    _textEditingController = TextEditingController();
     getAndroidVersions(StaticVariables.datasetOne);
     super.initState();
   }
@@ -88,65 +99,70 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Json Viewer"), actions: <Widget>[
-        IconButton(
-          icon: Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            // TODO on the click of search icon it will become input text widget and search
-          },
-        ),
-      ]),
+      appBar: AppBar(
+        title: Center(child: Text("Json Viewer")),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding:
+            const EdgeInsets.only(left: 15.0, right: 15.0, top: 15, bottom: 0),
         child: Column(
           children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(20)),
+              child: TextField(
+                controller: _textEditingController,
+                focusNode: _textFocusNode,
+                decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    hintText: 'Search Phones By ID',
+                    contentPadding: EdgeInsets.all(17)),
+                onChanged: (value) {
+                  setState(() {
+                    SearchList!.clear();
+                  });
+                  setState(() {
+                    SearchList = androidList
+                        .where((element) => element.id == (int.parse(value)))
+                        .toList();
+                  });
+                },
+              ),
+            ),
             SizedBox(
-              height: 30,
+              height: 20,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width,
-                child: gridData(androidListWithRandomKeys),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 40,
+                  crossAxisCount: 4,
+                ),
+                shrinkWrap: true,
+                itemCount: _textEditingController!.text.isNotEmpty
+                    ? SearchList!
+                        .length //Here is the condition for showing the search result
+                    : androidList.length,
+                itemBuilder: (ctx, index) {
+                  return Center(
+                      child: Text(
+                    _textEditingController!.text.isNotEmpty
+                        ? SearchList![index].title.toString()
+                        : androidList[index].title.toString(),
+                    style: TextStyle(fontSize: 14),
+                  ));
+                },
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width,
-                child: gridData(androidList),
-              ),
-            ),
+            )
           ],
         ),
       ),
     );
-  }
-
-  Widget gridData(var data) {
-    int countOfItem = 3;
-    if (data.length >= 3) {
-      setState(() {
-        countOfItem = 4;
-      });
-    }
-    return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 50,
-          crossAxisCount: countOfItem,
-        ),
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return GridTile(
-              child: Text(
-            data[index].title,
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          ));
-        });
   }
 }

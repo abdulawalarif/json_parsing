@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Orders1 extends StatefulWidget {
-  static const String routeName = "/Orders1";
+class Orders extends StatefulWidget {
   MyOrders1 createState() => MyOrders1();
 }
 
-class MyOrders1 extends State<Orders1> {
-  List<String>? PartyListSearch;
+class MyOrders1 extends State<Orders> {
   final FocusNode _textFocusNode = FocusNode();
-  TextEditingController? _textEditingController = TextEditingController();
-
-  get prefixIcon => null;
+  TextEditingController? _textEditingController;
+  List<FruitModel> glossarListOnSearch = [];
+  List<FruitModel> glossarList = [];
 
   void dispose() {
     _textFocusNode.dispose();
@@ -19,42 +17,33 @@ class MyOrders1 extends State<Orders1> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    List<String> PartyList = ['one', 'two', 'three'];
-    List<String> Location = ['one', 'two', 'three'];
+  void initState() {
+    _textEditingController = TextEditingController();
+    glossarList.add(FruitModel(id: 0, name: 'Apple', facts: 'Good for health'));
+    glossarList.add(
+        FruitModel(id: 1, name: 'Banana', facts: 'Banana is also for health'));
+    glossarList.add(
+        FruitModel(id: 2, name: 'Orange', facts: 'Orange good for health'));
+    glossarList
+        .add(FruitModel(id: 3, name: 'Apple', facts: 'Orange good for health'));
+    glossarList.add(
+        FruitModel(id: 4, name: 'Dragon', facts: 'Orange good for health'));
+    glossarList.add(FruitModel(
+        id: 5, name: 'Name na jana', facts: 'Orange good for health'));
+    glossarList
+        .add(FruitModel(id: 6, name: 'Ela', facts: 'Orange good for health'));
+    glossarList.add(
+        FruitModel(id: 7, name: 'Zarar bal', facts: 'Orange good for health'));
 
-    // final routes =
-    // ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    // List items = routes['Items'];
-    // for (var i = 0; i < items.length; i++) {
-    //   PartyList.add(items[i][0]['item_name']);
-    //   Location.add(items[i][0]['price_rate']);
-    // }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade300,
         centerTitle: true,
         title: Text('Orders'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.cyan, Colors.cyanAccent],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.notes_outlined,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(context);
-            },
-          )
-        ],
       ),
       body: Padding(
         padding:
@@ -68,91 +57,62 @@ class MyOrders1 extends State<Orders1> {
               child: TextField(
                 controller: _textEditingController,
                 focusNode: _textFocusNode,
-                decoration: InputDecoration(
-                    prefixIcon: prefixIcon ?? Icon(Icons.search),
+                decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.search),
                     border: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
-                    hintText: 'Search Items',
-                    contentPadding: EdgeInsets.all(20)),
+                    hintText: 'Search Phones By ID',
+                    contentPadding: EdgeInsets.all(17)),
                 onChanged: (value) {
                   setState(() {
-                    PartyListSearch = PartyList.where((element) =>
-                            element.toLowerCase().contains(value.toLowerCase()))
+                    glossarListOnSearch.clear();
+                  });
+                  setState(() {
+                    glossarListOnSearch = glossarList
+                        .where((element) => element.id == (int.parse(value)))
                         .toList();
-                    if (PartyList.isNotEmpty && PartyListSearch?.length == 0) {
-                      print('Partylist length ${PartyListSearch?.length}');
-                    }
                   });
                 },
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: _textEditingController!.text.isNotEmpty
-                      ? PartyListSearch!
-                          .length //Here is the condition for showing the search result
-                      : PartyList.length,
-                  itemBuilder: (ctx, index) {
-                    return InkWell(
-                      onTap: () {
-                        // Navigator.of(context).pushNamed(Takeorder.routeName,
-                        //     arguments: {
-                        //       'Item_name': PartyList[index],
-                        //       'Rupees': Location[index]
-                        //     }).then((result) {
-                        //   print(result);
-                        // });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 90,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.cyan.shade50,
-                                Colors.cyan.shade50
-                              ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    child: Icon(Icons.cases_rounded),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    _textEditingController!.text.isNotEmpty
-                                        ? PartyListSearch![index]
-                                        : PartyList[index],
-                                    style: TextStyle(fontSize: 19),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 180, 0),
-                                child: Text('Rupees : ' + Location[index],
-                                    style: TextStyle(fontSize: 17)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 40,
+                  crossAxisCount: 4,
+                ),
+                shrinkWrap: true,
+                itemCount: _textEditingController!.text.isNotEmpty
+                    ? glossarListOnSearch!
+                        .length //Here is the condition for showing the search result
+                    : glossarList.length,
+                itemBuilder: (ctx, index) {
+                  return Center(
+                      child: Text(
+                    _textEditingController!.text.isNotEmpty
+                        ? glossarListOnSearch[index].name.toString()
+                        : glossarList[index].name.toString(),
+                    style: TextStyle(fontSize: 14),
+                  ));
+                },
+              ),
             )
           ],
         ),
       ),
     );
   }
+}
+
+class FruitModel {
+  int? id;
+  String? name;
+  String? facts;
+  FruitModel({this.id, this.name, this.facts});
 }
