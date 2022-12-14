@@ -92,7 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _textEditingController = TextEditingController();
-    getAndroidVersions(StaticVariables.datasetOne);
+    //getAndroidVersions(StaticVariables.datasetOne);
+    getAndroidVersions(StaticVariables.datasetTwo);
     super.initState();
   }
 
@@ -136,13 +137,41 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
+            ),
+            SizedBox(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: ElevatedButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                              backgroundColor: Colors.blue),
+                          child: Text(
+                            "Load 1st Data Set",
+                            style: TextStyle(color: Colors.white),
+                          ))),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style:
+                          TextButton.styleFrom(backgroundColor: Colors.green),
+                      child: Text("Load 1st Data Set"),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisSpacing: 40,
-                  crossAxisCount: 4,
+                  crossAxisCount: 3,
                 ),
                 shrinkWrap: true,
                 itemCount: _textEditingController!.text.isNotEmpty
