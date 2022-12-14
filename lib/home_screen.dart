@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _textEditingController = TextEditingController();
     //getAndroidVersions(StaticVariables.datasetOne);
-    getAndroidVersions(StaticVariables.datasetTwo);
+
     super.initState();
   }
 
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               decoration: BoxDecoration(
                   color: Colors.black12,
-                  borderRadius: BorderRadius.circular(20)),
+                  borderRadius: BorderRadius.circular(10)),
               child: TextField(
                 controller: _textEditingController,
                 focusNode: _textFocusNode,
@@ -140,13 +140,19 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 10,
             ),
             SizedBox(
-              height: 50,
+              height: 60,
               width: MediaQuery.of(context).size.width,
               child: Row(
                 children: <Widget>[
                   Expanded(
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _textEditingController!.clear();
+                            androidList.clear();
+                            setState(() {
+                              getAndroidVersions(StaticVariables.datasetOne);
+                            });
+                          },
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.blue),
                           child: Text(
@@ -158,22 +164,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
-                      style:
-                          TextButton.styleFrom(backgroundColor: Colors.green),
-                      child: Text("Load 1st Data Set"),
+                      onPressed: () {
+                        androidList.clear();
+                        _textEditingController!.clear();
+                        setState(() {
+                          getAndroidVersions(StaticVariables.datasetTwo);
+                        });
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.blue),
+                      child: Text("Load 2nd Data Set"),
                     ),
                   ),
                 ],
               ),
             ),
+            SizedBox(
+              width: 10,
+            ),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 40,
-                  crossAxisCount: 3,
-                ),
-                shrinkWrap: true,
+                    //crossAxisSpacing: 40,
+                    crossAxisCount: 3,
+                    mainAxisExtent: 50),
                 itemCount: _textEditingController!.text.isNotEmpty
                     ? SearchList!
                         .length //Here is the condition for showing the search result
@@ -184,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _textEditingController!.text.isNotEmpty
                         ? SearchList![index].title.toString()
                         : androidList[index].title.toString(),
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: 15),
                   ));
                 },
               ),
