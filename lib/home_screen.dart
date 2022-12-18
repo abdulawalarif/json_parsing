@@ -151,8 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             androidList.clear();
                             setState(() {
                               getAndroidVersions(StaticVariables.datasetOne);
-                              AndroidVerison data =
-                                  AndroidVerison(id: 100, title: "");
+                              AndroidVerison data = AndroidVerison(title: "");
+                              //as in the first data set we just have only one space empty on second position
+                              //so i am filling it with an empty string
                               androidList.insert(2, data);
                             });
                           },
@@ -172,8 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         _textEditingController!.clear();
                         setState(() {
                           getAndroidVersions(StaticVariables.datasetTwo);
-                          AndroidVerison data =
-                              AndroidVerison(id: 100, title: "");
+                          AndroidVerison data = AndroidVerison(title: "");
                           androidList.insert(2, data);
                           androidList.insert(5, data);
                         });
