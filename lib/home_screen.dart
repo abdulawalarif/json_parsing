@@ -151,6 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             androidList.clear();
                             setState(() {
                               getAndroidVersions(StaticVariables.datasetOne);
+                              AndroidVerison data =
+                                  AndroidVerison(id: 100, title: "");
+                              androidList.insert(2, data);
                             });
                           },
                           style: TextButton.styleFrom(
@@ -169,6 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         _textEditingController!.clear();
                         setState(() {
                           getAndroidVersions(StaticVariables.datasetTwo);
+                          AndroidVerison data =
+                              AndroidVerison(id: 100, title: "");
+                          androidList.insert(2, data);
+                          androidList.insert(5, data);
                         });
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.blue),
@@ -179,27 +186,33 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(
-              width: 10,
+              height: 40,
             ),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    //crossAxisSpacing: 40,
-                    crossAxisCount: 3,
-                    mainAxisExtent: 50),
-                itemCount: _textEditingController!.text.isNotEmpty
-                    ? SearchList!
-                        .length //Here is the condition for showing the search result
-                    : androidList.length,
-                itemBuilder: (ctx, index) {
-                  return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+
+                      //crossAxisSpacing: 40,
+                      crossAxisCount: 4,
+                      mainAxisExtent: 50),
+                  itemCount: _textEditingController!.text.isNotEmpty
+                      ? SearchList!
+                          .length //Here is the condition for showing the search result
+                      : androidList.length,
+                  itemBuilder: (ctx, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(3),
                       child: Text(
-                    _textEditingController!.text.isNotEmpty
-                        ? SearchList![index].title.toString()
-                        : androidList[index].title.toString(),
-                    style: TextStyle(fontSize: 15),
-                  ));
-                },
+                        _textEditingController!.text.isNotEmpty
+                            ? SearchList![index].title.toString()
+                            : androidList[index].title.toString(),
+                        style: TextStyle(fontSize: 13),
+                      ),
+                    );
+                  },
+                ),
               ),
             )
           ],
